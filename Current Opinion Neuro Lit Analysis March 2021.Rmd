@@ -1,0 +1,645 @@
+---
+title: "Current Opinion integration Social Neuro Cognition March 2021"
+author: "Kelly Wallace"
+date: "March 4, 2021"
+output: html_document
+---
+
+```{r, echo = FALSE, message=FALSE, warning=FALSE}
+library(ggplot2)
+library(plyr)
+library(stringr)
+library(dplyr)
+library(rmarkdown)
+library(knitr)
+library(readr)
+library(RColorBrewer)
+library(viridis)
+```
+
+#import datasets
+```{r, echo = FALSE, message=FALSE, warning=FALSE}
+SN_by_year<-read.csv("/stor/work/Hofmann/Shared/Manuscripts/Review_CONeurobiology _CogEcol&SocNeuro/Revision March 2021/literature analysis redo march 2021/SN_by_year.csv")
+SN_by_year<-as.data.frame(SN_by_year)
+SN_by_year$year<-rownames(SN_by_year)
+colnames(SN_by_year)<-c("count", "yearpub")
+
+CE_by_year<-read.csv("/stor/work/Hofmann/Shared/Manuscripts/Review_CONeurobiology _CogEcol&SocNeuro/Revision March 2021/literature analysis redo march 2021/CE_by_year.csv")
+CE_by_year<-as.data.frame(CE_by_year)
+CE_by_year$year<-rownames(CE_by_year)
+colnames(CE_by_year)<-c("count", "yearpub")
+
+AC_by_year<-read.csv("/stor/work/Hofmann/Shared/Manuscripts/Review_CONeurobiology _CogEcol&SocNeuro/Revision March 2021/literature analysis redo march 2021/AC_by_year.csv")
+AC_by_year<-as.data.frame(AC_by_year)
+AC_by_year$year<-rownames(AC_by_year)
+colnames(AC_by_year)<-c("count", "yearpub")
+
+SNCE_by_year<-read.csv("/stor/work/Hofmann/Shared/Manuscripts/Review_CONeurobiology _CogEcol&SocNeuro/Revision March 2021/literature analysis redo march 2021/SNCE_by_year.csv")
+SNCE_by_year<-as.data.frame(SNCE_by_year)
+SNCE_by_year$year<-rownames(SNCE_by_year)
+colnames(SNCE_by_year)<-c("count", "yearpub")
+
+SNAC_by_year<-read.csv("/stor/work/Hofmann/Shared/Manuscripts/Review_CONeurobiology _CogEcol&SocNeuro/Revision March 2021/literature analysis redo march 2021/SNAC_by_year.csv")
+SNAC_by_year<-as.data.frame(SNAC_by_year)
+SNAC_by_year$year<-rownames(SNAC_by_year)
+colnames(SNAC_by_year)<-c("count", "yearpub")
+
+
+SN_five<-read.csv("/stor/work/Hofmann/Shared/Manuscripts/Review_CONeurobiology _CogEcol&SocNeuro/Revision March 2021/literature analysis redo march 2021/SN_five.csv")
+
+CE_five<-read.csv("/stor/work/Hofmann/Shared/Manuscripts/Review_CONeurobiology _CogEcol&SocNeuro/Revision March 2021/literature analysis redo march 2021/CE_five.csv")
+
+AC_five<-read.csv("/stor/work/Hofmann/Shared/Manuscripts/Review_CONeurobiology _CogEcol&SocNeuro/Revision March 2021/literature analysis redo march 2021/AC_five.csv")
+
+SNCE_five<-read.csv("/stor/work/Hofmann/Shared/Manuscripts/Review_CONeurobiology _CogEcol&SocNeuro/Revision March 2021/literature analysis redo march 2021/SNCE_five.csv")
+
+SNAC_five<-read.csv("/stor/work/Hofmann/Shared/Manuscripts/Review_CONeurobiology _CogEcol&SocNeuro/Revision March 2021/literature analysis redo march 2021/SNAC_five.csv")
+  
+
+  
+```
+
+
+#number of results, number of journals, and most popular journals represented in each (2016-2020) search
+```{r, echo = FALSE, message=FALSE, warning=FALSE}
+
+
+print("number of results in SN (2016-2020)")
+nrow(SN_five)
+print("number of journals represented in SN (2016-2020)")
+length(unique(SN_five$Journal.Book))
+print("three most popular journals in SN (2016-2020) search")
+freqfunc <- function(x, n){
+  tail(sort(table(unlist(strsplit(as.character(x), ", ")))), n)
+}
+print(freqfunc(SN_five$Journal.Book, 3))
+
+print("________________________")
+
+print("number of results in CE (2016-2020)")
+nrow(CE_five)
+print("number of journals represented in CE (2016-2020)")
+length(unique(CE_five$Journal.Book))
+print("three most popular journals in CE (2016-2020) search")
+freqfunc <- function(x, n){
+  tail(sort(table(unlist(strsplit(as.character(x), ", ")))), n)
+}
+print(freqfunc(CE_five$Journal.Book, 3))
+
+print("________________________")
+
+print("number of results in AC (2016-2020)")
+nrow(AC_five)
+print("number of journals represented in AC (2016-2020)")
+length(unique(AC_five$Journal.Book))
+print("three most popular journals in AC (2016-2020) search")
+freqfunc <- function(x, n){
+  tail(sort(table(unlist(strsplit(as.character(x), ", ")))), n)
+}
+print(freqfunc(AC_five$Journal.Book, 3))
+
+print("________________________")
+
+
+print("number of results in SNCE (2016-2020)")
+nrow(SNCE_five)
+print("number of journals represented in SNCE (2016-2020)")
+length(unique(SNCE_five$Journal.Book))
+print("three most popular journals in SNCE (2016-2020) search")
+freqfunc <- function(x, n){
+  tail(sort(table(unlist(strsplit(as.character(x), ", ")))), n)
+}
+print(freqfunc(SNCE_five$Journal.Book, 3))
+
+print("________________________")
+
+
+
+
+print("number of results in SNAC (2016-2020)")
+nrow(SNAC_five)
+print("number of journals represented in SNAC (2016-2020)")
+length(unique(SNAC_five$Journal.Book))
+print("three most popular journals in SNAC (2016-2020) search")
+freqfunc <- function(x, n){
+  tail(sort(table(unlist(strsplit(as.character(x), ", ")))), n)
+}
+print(freqfunc(SNAC_five$Journal.Book, 3))
+
+print("________________________")
+
+```
+  
+  
+#proportion of overlap between CE/SN and CE/AC
+```{r, echo = FALSE, message=FALSE, warning=FALSE}
+#reported as proportion of CE results that are ALSO found in SN/AC
+
+#CE and SN
+intersect<-inner_join(CE_five, SN_five, by = "Title")
+print("% CE in SN")
+print(paste(nrow(intersect), "/", nrow(CE_five), "= ", round((nrow(intersect)/nrow(CE_five)*100),1), "%"))
+
+#CE and AC
+intersect<-inner_join(CE_five, AC_five, by = "Title")
+print("% CE in AC")
+print(paste(nrow(intersect), "/", nrow(CE_five), "= ", round((nrow(intersect)/nrow(CE_five)*100),1), "%"))
+
+  
+```
+
+#pubs by year graphs
+```{r, echo = FALSE, message=FALSE, warning=FALSE}
+
+yearstemp<-as.data.frame(c(1963:2019))
+colnames(yearstemp)<-c("year")
+yearstemp$sn<-NA
+yearstemp$ce<-NA
+yearstemp$ac<-NA
+yearstemp$snce<-NA
+yearstemp$snac<-NA
+
+i<-1
+for (i in 1:nrow(yearstemp)){
+   year<-yearstemp$year[i]
+   if(year %in% SN_by_year$yearpub){
+   yearstemp$sn[i]<-SN_by_year[which(SN_by_year$yearpub == year),1] %>% as.matrix() %>% as.numeric()}}
+
+i<-1
+for (i in 1:nrow(yearstemp)){
+   year<-yearstemp$year[i]
+   if(year %in% CE_by_year$yearpub){
+   yearstemp$ce[i]<-CE_by_year[which(CE_by_year$yearpub == year),1] %>% as.matrix() %>% as.numeric()}}
+
+i<-1
+for (i in 1:nrow(yearstemp)){
+   year<-yearstemp$year[i]
+   if(year %in% AC_by_year$yearpub){
+   yearstemp$ac[i]<-AC_by_year[which(AC_by_year$yearpub == year),1] %>% as.matrix() %>% as.numeric()}}
+
+i<-1
+for (i in 1:nrow(yearstemp)){
+   year<-yearstemp$year[i]
+   if(year %in% SNCE_by_year$yearpub){
+   yearstemp$snce[i]<-SNCE_by_year[which(SNCE_by_year$yearpub == year),1] %>% as.matrix() %>% as.numeric()}}
+
+i<-1
+for (i in 1:nrow(yearstemp)){
+   year<-yearstemp$year[i]
+   if(year %in% SNAC_by_year$yearpub){
+   yearstemp$snac[i]<-SNAC_by_year[which(SNAC_by_year$yearpub == year),1] %>% as.matrix() %>% as.numeric()}}
+
+
+
+#####graphs each with their own axes
+
+ggplot(yearstemp, aes(x = year, y = sn)) +
+  geom_line(color = (viridis(5)[1]), size = 2)+ theme_classic()+
+  ggtitle("sn 1963 to 2019")+
+  theme(text = element_text(size = 20))
+  
+ggplot(yearstemp, aes(x = year, y = ce)) +
+  geom_line(color = (viridis(5)[2]), size = 2)+ theme_classic()+
+  ggtitle("ce 1963 to 2019")+
+  theme(text = element_text(size = 20))
+
+ggplot(yearstemp, aes(x = year, y = ac)) +
+  geom_line(color = (viridis(5)[3]), size = 2)+ theme_classic()+
+  ggtitle("ac 1963 to 2019")+
+  theme(text = element_text(size = 20))
+
+ggplot(yearstemp, aes(x = year, y = snce)) +
+  geom_line(color = (viridis(5)[4]), size = 2)+ theme_classic()+
+  ggtitle("snce 1963 to 2019")+
+  theme(text = element_text(size = 20))
+
+
+ggplot(yearstemp, aes(x = year, y = snac)) +
+  geom_line(color = (viridis(5)[5]), size = 2)+ theme_classic()+
+  ggtitle("snac 1963 to 2019")+
+  theme(text = element_text(size = 20))
+
+
+
+#####graphs all with same axes but NOT SCALED
+
+ggplot(yearstemp, aes(x = year, y = sn)) +
+  geom_line(color = (viridis(5)[1]), size = 2)+ theme_classic()+
+  ggtitle("sn 1963 to 2019")+
+  theme(text = element_text(size = 20))+
+  xlim(1963, 2019)+
+  ylim(0, 2500)
+  
+ggplot(yearstemp, aes(x = year, y = ce)) +
+  geom_line(color = (viridis(5)[2]), size = 2)+ theme_classic()+
+  ggtitle("ce 1963 to 2019")+
+  theme(text = element_text(size = 20))+
+  xlim(1963, 2019)+
+  ylim(0, 2500)
+
+ggplot(yearstemp, aes(x = year, y = ac)) +
+  geom_line(color = (viridis(5)[3]), size = 2)+ theme_classic()+
+  ggtitle("ac 1963 to 2019")+
+  theme(text = element_text(size = 20))+
+  xlim(1963, 2019)+
+  ylim(0, 2500)
+
+ggplot(yearstemp, aes(x = year, y = snce)) +
+  geom_line(color = (viridis(5)[4]), size = 2)+ theme_classic()+
+  ggtitle("snce 1963 to 2019")+
+  theme(text = element_text(size = 20))+
+  xlim(1963, 2019)+
+  ylim(0, 2500)
+
+ggplot(yearstemp, aes(x = year, y = snac)) +
+  geom_line(color = (viridis(5)[5]), size = 2)+ theme_classic()+
+  ggtitle("snac 1963 to 2019")+
+  theme(text = element_text(size = 20))+
+  xlim(1963, 2019)+
+  ylim(0, 2500)
+
+
+
+#####graphs all with the same axes SCALED
+
+
+maxsn<- max(yearstemp$sn, na.rm = TRUE)
+maxce<-max(yearstemp$ce, na.rm = TRUE)
+maxac<-max(yearstemp$ac, na.rm = TRUE)
+maxsnce<-max(yearstemp$snce, na.rm = TRUE)
+maxsnac<-max(yearstemp$snac, na.rm = TRUE)
+
+i<-1
+for (i in 1:nrow(yearstemp)){
+yearstemp$sn_scaled[i] <- yearstemp$sn[i] / maxsn}
+
+i<-1
+for (i in 1:nrow(yearstemp)){
+yearstemp$ce_scaled[i] <- yearstemp$ce[i] / maxce}
+
+i<-1
+for (i in 1:nrow(yearstemp)){
+yearstemp$ac_scaled[i] <- yearstemp$ac[i] / maxac}
+
+i<-1
+for (i in 1:nrow(yearstemp)){
+yearstemp$snce_scaled[i] <- yearstemp$snce[i] / maxsnce}
+
+i<-1
+for (i in 1:nrow(yearstemp)){
+yearstemp$snac_scaled[i] <- yearstemp$snac[i] / maxsnac}
+
+ggplot(yearstemp, aes(x = year, y = sn_scaled)) +
+  geom_line(color = (viridis(5)[1]), size = 2)+ theme_classic()+
+  ggtitle("sn 1963 to 2019")+
+  theme(text = element_text(size = 20))+
+  xlim(1963, 2019)+
+  ylim(0, 1)
+  
+ggplot(yearstemp, aes(x = year, y = ce_scaled)) +
+  geom_line(color = (viridis(5)[2]), size = 2)+ theme_classic()+
+  ggtitle("ce 1963 to 2019")+
+  theme(text = element_text(size = 20))+
+  xlim(1963, 2019)+
+  ylim(0, 1)
+
+ggplot(yearstemp, aes(x = year, y = ac_scaled)) +
+  geom_line(color = (viridis(5)[3]), size = 2)+ theme_classic()+
+  ggtitle("ac 1963 to 2019")+
+  theme(text = element_text(size = 20))+
+  xlim(1963, 2019)+
+  ylim(0, 1)
+
+ggplot(yearstemp, aes(x = year, y = snce_scaled)) +
+  geom_line(color = (viridis(5)[4]), size = 2)+ theme_classic()+
+  ggtitle("snce 1963 to 2019")+
+  theme(text = element_text(size = 20))+
+  xlim(1963, 2019)+
+  ylim(0, 1)
+
+ggplot(yearstemp, aes(x = year, y = snac_scaled)) +
+  geom_line(color = (viridis(5)[5]), size = 2)+ theme_classic()+
+  ggtitle("snac 1963 to 2019")+
+  theme(text = element_text(size = 20))+
+  xlim(1963, 2019)+
+  ylim(0, 1)
+
+
+
+
+
+
+#one more set, now just 1995 to 2019 to better see the difference in pace
+
+ggplot(yearstemp, aes(x = year, y = sn_scaled)) +
+  geom_line(color = (viridis(5)[1]), size = 2)+ theme_classic()+
+  ggtitle("sn 1995 to 2019")+
+  theme(text = element_text(size = 20))+
+  xlim(1995, 2019)+
+  ylim(0, 1)
+  
+ggplot(yearstemp, aes(x = year, y = ce_scaled)) +
+  geom_line(color = (viridis(5)[2]), size = 2)+ theme_classic()+
+  ggtitle("ce 1995 to 2019")+
+  theme(text = element_text(size = 20))+
+  xlim(1995, 2019)+
+  ylim(0, 1)
+
+ggplot(yearstemp, aes(x = year, y = ac_scaled)) +
+  geom_line(color = (viridis(5)[3]), size = 2)+ theme_classic()+
+  ggtitle("ac 1995 to 2019")+
+  theme(text = element_text(size = 20))+
+  xlim(1995, 2019)+
+  ylim(0, 1)
+
+ggplot(yearstemp, aes(x = year, y = snce_scaled)) +
+  geom_line(color = (viridis(5)[4]), size = 2)+ theme_classic()+
+  ggtitle("snce 1995 to 2019")+
+  theme(text = element_text(size = 20))+
+  xlim(1995, 2019)+
+  ylim(0, 1)
+
+ggplot(yearstemp, aes(x = year, y = snac_scaled)) +
+  geom_line(color = (viridis(5)[5]), size = 2)+ theme_classic()+
+  ggtitle("snac 1995 to 2019")+
+  theme(text = element_text(size = 20))+
+  xlim(1995, 2019)+
+  ylim(0, 1)
+
+
+
+```
+
+
+#most common terms in each search (based on title words)
+```{r, echo = FALSE, message=FALSE, warning=FALSE}
+SN_five$search <-"sn"
+CE_five$search <-"ce"
+AC_five$search <- "ac"
+SNCE_five$search <- "snce"
+SNAC_five$search <- "snac"
+
+full_import<-rbind(SN_five, CE_five, AC_five, SNCE_five, SNAC_five)
+
+
+#####SN
+
+i<-1
+titlewordlist<-NA
+for (i in 1:nrow(SN_five)){
+  title<-as.vector((SN_five$Title[i]))
+  title<-tolower(title)
+  
+  if(grepl("?", title, fixed = TRUE)){title<-gsub("?", "", title, fixed = TRUE)}
+  if(grepl("!", title, fixed = TRUE)){title<-gsub("!", "", title, fixed = TRUE)}
+  if(grepl(":", title, fixed = TRUE)){title<-gsub(":", "", title, fixed = TRUE)}
+  if(grepl(".", title, fixed = TRUE)){title<-gsub(".", "", title, fixed = TRUE)}
+  if(grepl(")", title, fixed = TRUE)){title<-gsub(")", "", title, fixed = TRUE)}
+  if(grepl("(", title, fixed = TRUE)){title<-gsub("(", "", title, fixed = TRUE)}
+  if(grepl(";", title, fixed = TRUE)){title<-gsub(";", "", title, fixed = TRUE)}
+  if(grepl(",", title, fixed = TRUE)){title<-gsub(",", "", title, fixed = TRUE)}
+  if(grepl("-", title, fixed = TRUE)){title<-gsub("-", " ", title, fixed = TRUE)}
+  temp<-unlist(strsplit(title," "))
+  temp<-tolower(temp)
+titlewordlist<-append(titlewordlist, temp)}
+     
+temp<-as.data.frame(vector(length = length(unique(titlewordlist))))
+temp$word<-unique(titlewordlist)
+titledf<-as.data.frame(titlewordlist)
+
+#####SN
+
+i<-1
+for (i in 1:nrow(temp)){
+word<-temp$word[i]
+temp$freq[i]<-titledf %>% filter(titlewordlist == word) %>% nrow()}
+temp<-temp %>% filter (temp$freq>1)
+temp<-temp %>% select (word, freq)
+
+temp<-temp %>% filter(nchar(word)>2)
+drops<-c( "and", "are", "about", "also","always","amongst","anything","because","been","being", "but", "does" ,"done","dont","even","for", "form","from", "have", "make","both", "its", "like","same","many", "not", "rather","really","should","some","than","that","their","only","our", "very",   "the","them","there","these","they","things","this","was", "what","when","where","while","will","with", "much")
+
+temp<-temp %>% filter (!word %in% drops)
+full_word_frequency<-temp
+full_word_frequency_over_100<-temp %>% filter(freq >= 620)
+
+ggplot(data = full_word_frequency_over_100, aes(x=reorder(word, freq), y=freq)) + 
+    geom_bar(stat = "identity", fill = (viridis(5)[1])) + 
+  theme_classic() +
+  coord_flip()+
+  geom_text(aes(label=freq), hjust = 1.3, size=4, color = "white")+
+  theme(text = element_text(size=16))+
+  theme(axis.title.x = element_blank(), axis.title.y = element_blank())+
+  ggtitle("top 10 most frequent title words in SN, minimum 620")+theme(plot.title = element_text(size = 16, face = "italic"))
+  
+
+#####CE
+
+i<-1
+titlewordlist<-NA
+for (i in 1:nrow(CE_five)){
+  title<-as.vector((CE_five$Title[i]))
+  title<-tolower(title)
+  
+  if(grepl("?", title, fixed = TRUE)){title<-gsub("?", "", title, fixed = TRUE)}
+  if(grepl("!", title, fixed = TRUE)){title<-gsub("!", "", title, fixed = TRUE)}
+  if(grepl(":", title, fixed = TRUE)){title<-gsub(":", "", title, fixed = TRUE)}
+  if(grepl(".", title, fixed = TRUE)){title<-gsub(".", "", title, fixed = TRUE)}
+  if(grepl(")", title, fixed = TRUE)){title<-gsub(")", "", title, fixed = TRUE)}
+  if(grepl("(", title, fixed = TRUE)){title<-gsub("(", "", title, fixed = TRUE)}
+  if(grepl(";", title, fixed = TRUE)){title<-gsub(";", "", title, fixed = TRUE)}
+  if(grepl(",", title, fixed = TRUE)){title<-gsub(",", "", title, fixed = TRUE)}
+  if(grepl("-", title, fixed = TRUE)){title<-gsub("-", " ", title, fixed = TRUE)}
+  temp<-unlist(strsplit(title," "))
+  temp<-tolower(temp)
+titlewordlist<-append(titlewordlist, temp)}
+     
+temp<-as.data.frame(vector(length = length(unique(titlewordlist))))
+temp$word<-unique(titlewordlist)
+titledf<-as.data.frame(titlewordlist)
+
+i<-1
+for (i in 1:nrow(temp)){
+word<-temp$word[i]
+temp$freq[i]<-titledf %>% filter(titlewordlist == word) %>% nrow()}
+temp<-temp %>% filter (temp$freq>1)
+temp<-temp %>% select (word, freq)
+
+temp<-temp %>% filter(nchar(word)>2)
+drops<-c( "and", "are", "about", "also","always","amongst","anything","because","been","being", "but", "does" ,"done","dont","even","for", "form","from", "have", "make","both", "its", "like","same","many", "not", "rather","really","should","some","than","that","their","only","our", "very",   "the","them","there","these","they","things","this","was", "what","when","where","while","will","with", "much")
+
+temp<-temp %>% filter (!word %in% drops)
+full_word_frequency<-temp
+full_word_frequency_over_100<-temp %>% filter(freq >= 28)
+
+ggplot(data = full_word_frequency_over_100, aes(x=reorder(word, freq), y=freq)) + 
+    geom_bar(stat = "identity", fill = (viridis(5)[2])) + 
+  theme_classic() +
+  coord_flip()+
+  geom_text(aes(label=freq), hjust = 1.3, size=4, color = "white")+
+  theme(text = element_text(size=16))+
+  theme(axis.title.x = element_blank(), axis.title.y = element_blank())+
+  ggtitle("top 10 most frequent title words in CE, minimum 28")+theme(plot.title = element_text(size = 16, face = "italic"))
+
+
+#####AC
+
+i<-1
+titlewordlist<-NA
+for (i in 1:nrow(AC_five)){
+  title<-as.vector((AC_five$Title[i]))
+  title<-tolower(title)
+  
+  if(grepl("?", title, fixed = TRUE)){title<-gsub("?", "", title, fixed = TRUE)}
+  if(grepl("!", title, fixed = TRUE)){title<-gsub("!", "", title, fixed = TRUE)}
+  if(grepl(":", title, fixed = TRUE)){title<-gsub(":", "", title, fixed = TRUE)}
+  if(grepl(".", title, fixed = TRUE)){title<-gsub(".", "", title, fixed = TRUE)}
+  if(grepl(")", title, fixed = TRUE)){title<-gsub(")", "", title, fixed = TRUE)}
+  if(grepl("(", title, fixed = TRUE)){title<-gsub("(", "", title, fixed = TRUE)}
+  if(grepl(";", title, fixed = TRUE)){title<-gsub(";", "", title, fixed = TRUE)}
+  if(grepl(",", title, fixed = TRUE)){title<-gsub(",", "", title, fixed = TRUE)}
+  if(grepl("-", title, fixed = TRUE)){title<-gsub("-", " ", title, fixed = TRUE)}
+  temp<-unlist(strsplit(title," "))
+  temp<-tolower(temp)
+titlewordlist<-append(titlewordlist, temp)}
+     
+temp<-as.data.frame(vector(length = length(unique(titlewordlist))))
+temp$word<-unique(titlewordlist)
+titledf<-as.data.frame(titlewordlist)
+
+i<-1
+for (i in 1:nrow(temp)){
+word<-temp$word[i]
+temp$freq[i]<-titledf %>% filter(titlewordlist == word) %>% nrow()}
+temp<-temp %>% filter (temp$freq>1)
+temp<-temp %>% select (word, freq)
+
+temp<-temp %>% filter(nchar(word)>2)
+drops<-c( "and", "are", "about", "also","always","amongst","anything","because","been","being", "but", "does" ,"done","dont","even","for", "form","from", "have", "make","both", "its", "like","same","many", "not", "rather","really","should","some","than","that","their","only","our", "very",   "the","them","there","these","they","things","this","was", "what","when","where","while","will","with", "much")
+
+temp<-temp %>% filter (!word %in% drops)
+full_word_frequency<-temp
+full_word_frequency_over_100<-temp %>% filter(freq >= 520)
+
+ggplot(data = full_word_frequency_over_100, aes(x=reorder(word, freq), y=freq)) + 
+    geom_bar(stat = "identity", fill = (viridis(5)[3])) + 
+  theme_classic() +
+  coord_flip()+
+  geom_text(aes(label=freq), hjust = 1.3, size=4, color = "white")+
+  theme(text = element_text(size=16))+
+  theme(axis.title.x = element_blank(), axis.title.y = element_blank())+
+  ggtitle("top 10 most frequent title words in AC, minimum 520")+theme(plot.title = element_text(size = 16, face = "italic"))
+
+
+#####SNCE
+
+i<-1
+titlewordlist<-NA
+for (i in 1:nrow(SNCE_five)){
+  title<-as.vector((SNCE_five$Title[i]))
+  title<-tolower(title)
+  
+  if(grepl("?", title, fixed = TRUE)){title<-gsub("?", "", title, fixed = TRUE)}
+  if(grepl("!", title, fixed = TRUE)){title<-gsub("!", "", title, fixed = TRUE)}
+  if(grepl(":", title, fixed = TRUE)){title<-gsub(":", "", title, fixed = TRUE)}
+  if(grepl(".", title, fixed = TRUE)){title<-gsub(".", "", title, fixed = TRUE)}
+  if(grepl(")", title, fixed = TRUE)){title<-gsub(")", "", title, fixed = TRUE)}
+  if(grepl("(", title, fixed = TRUE)){title<-gsub("(", "", title, fixed = TRUE)}
+  if(grepl(";", title, fixed = TRUE)){title<-gsub(";", "", title, fixed = TRUE)}
+  if(grepl(",", title, fixed = TRUE)){title<-gsub(",", "", title, fixed = TRUE)}
+  if(grepl("-", title, fixed = TRUE)){title<-gsub("-", " ", title, fixed = TRUE)}
+  temp<-unlist(strsplit(title," "))
+  temp<-tolower(temp)
+titlewordlist<-append(titlewordlist, temp)}
+     
+temp<-as.data.frame(vector(length = length(unique(titlewordlist))))
+temp$word<-unique(titlewordlist)
+titledf<-as.data.frame(titlewordlist)
+
+i<-1
+for (i in 1:nrow(temp)){
+word<-temp$word[i]
+temp$freq[i]<-titledf %>% filter(titlewordlist == word) %>% nrow()}
+temp<-temp %>% filter (temp$freq>1)
+temp<-temp %>% select (word, freq)
+
+temp<-temp %>% filter(nchar(word)>2)
+drops<-c( "and", "are", "about", "also","always","amongst","anything","because","been","being", "but", "does" ,"done","dont","even","for", "form","from", "have", "make","both", "its", "like","same","many", "not", "rather","really","should","some","than","that","their","only","our", "very",   "the","them","there","these","they","things","this","was", "what","when","where","while","will","with", "much")
+
+temp<-temp %>% filter (!word %in% drops)
+full_word_frequency<-temp
+full_word_frequency_over_100<-temp %>% filter(freq >= 5)
+
+ggplot(data = full_word_frequency_over_100, aes(x=reorder(word, freq), y=freq)) + 
+    geom_bar(stat = "identity", fill = (viridis(5)[4])) + 
+  theme_classic() +
+  coord_flip()+
+  geom_text(aes(label=freq), hjust = 1.3, size=4, color = "white")+
+  theme(text = element_text(size=16))+
+  theme(axis.title.x = element_blank(), axis.title.y = element_blank())+
+  ggtitle("top 10 most frequent title words in SNCE, minimum 5")+theme(plot.title = element_text(size = 16, face = "italic"))
+
+
+
+#####SNAC
+
+i<-1
+titlewordlist<-NA
+for (i in 1:nrow(SNAC_five)){
+  title<-as.vector((SNAC_five$Title[i]))
+  title<-tolower(title)
+  
+  if(grepl("?", title, fixed = TRUE)){title<-gsub("?", "", title, fixed = TRUE)}
+  if(grepl("!", title, fixed = TRUE)){title<-gsub("!", "", title, fixed = TRUE)}
+  if(grepl(":", title, fixed = TRUE)){title<-gsub(":", "", title, fixed = TRUE)}
+  if(grepl(".", title, fixed = TRUE)){title<-gsub(".", "", title, fixed = TRUE)}
+  if(grepl(")", title, fixed = TRUE)){title<-gsub(")", "", title, fixed = TRUE)}
+  if(grepl("(", title, fixed = TRUE)){title<-gsub("(", "", title, fixed = TRUE)}
+  if(grepl(";", title, fixed = TRUE)){title<-gsub(";", "", title, fixed = TRUE)}
+  if(grepl(",", title, fixed = TRUE)){title<-gsub(",", "", title, fixed = TRUE)}
+  if(grepl("-", title, fixed = TRUE)){title<-gsub("-", " ", title, fixed = TRUE)}
+  temp<-unlist(strsplit(title," "))
+  temp<-tolower(temp)
+titlewordlist<-append(titlewordlist, temp)}
+     
+temp<-as.data.frame(vector(length = length(unique(titlewordlist))))
+temp$word<-unique(titlewordlist)
+titledf<-as.data.frame(titlewordlist)
+
+i<-1
+for (i in 1:nrow(temp)){
+word<-temp$word[i]
+temp$freq[i]<-titledf %>% filter(titlewordlist == word) %>% nrow()}
+temp<-temp %>% filter (temp$freq>1)
+temp<-temp %>% select (word, freq)
+
+temp<-temp %>% filter(nchar(word)>2)
+drops<-c( "and", "are", "about", "also","always","amongst","anything","because","been","being", "but", "does" ,"done","dont","even","for", "form","from", "have", "make","both", "its", "like","same","many", "not", "rather","really","should","some","than","that","their","only","our", "very",   "the","them","there","these","they","things","this","was", "what","when","where","while","will","with", "much")
+
+temp<-temp %>% filter (!word %in% drops)
+full_word_frequency<-temp
+full_word_frequency_over_100<-temp %>% filter(freq >= 100)
+
+ggplot(data = full_word_frequency_over_100, aes(x=reorder(word, freq), y=freq)) + 
+    geom_bar(stat = "identity", fill = (viridis(5)[5])) + 
+  theme_classic() +
+  coord_flip()+
+  geom_text(aes(label=freq), hjust = 1.3, size=4, color = "gray70")+
+  theme(text = element_text(size=16))+
+  theme(axis.title.x = element_blank(), axis.title.y = element_blank())+
+  ggtitle("top 10 most frequent title words in SNAC, minimum 100")+theme(plot.title = element_text(size = 16, face = "italic"))
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+  
